@@ -89,36 +89,24 @@ docker-compose down -v
     <img src="public/screenshots/1.日历.jpg" alt="日历" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
-    <h4>2. 资产</h4>
-    <img src="public/screenshots/2.资产.jpg" alt="资产" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <h4>2. 账户</h4>
+    <img src="public/screenshots/2.账户.jpg" alt="账户" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
-    <h4>3. 分析</h4>
-    <img src="public/screenshots/3.分析.jpg" alt="分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <h4>3. 资产分析</h4>
+    <img src="public/screenshots/3.资产分析.jpg" alt="资产分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
-    <h4>4. 分析明细</h4>
-    <img src="public/screenshots/4.分析明细.jpg" alt="分析明细" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <h4>4. 收支分析</h4>
+    <img src="public/screenshots/4.收支分析.jpg" alt="收支分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
-    <h4>5. 流水</h4>
-    <img src="public/screenshots/5.流水.jpg" alt="流水" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <h4>5. 流水导入</h4>
+    <img src="public/screenshots/5.流水导入.jpg" alt="流水导入" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
-    <h4>6. 流水导入</h4>
-    <img src="public/screenshots/6.流水导入.jpg" alt="流水导入" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
-  </div>
-  <div>
-    <h4>7. 流水分析</h4>
-    <img src="public/screenshots/7.流水分析.jpg" alt="流水分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
-  </div>
-  <div>
-    <h4>8. 账户</h4>
-    <img src="public/screenshots/8.账户.jpg" alt="账户" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
-  </div>
-  <div>
-    <h4>9. 流水收拢</h4>
-    <img src="public/screenshots/9.流水收拢.jpg" alt="流水收拢" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <h4>6. 流水收拢</h4>
+    <img src="public/screenshots/6.流水收拢.jpg" alt="流水收拢" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
 </div>
 </details>
@@ -126,20 +114,16 @@ docker-compose down -v
 ## 核心功能新增
 
 ### 资产管理功能增强 ⭐ **核心增强**
-- [x] **计入总资产概念**（`includeInTotal`字段）
+- [x] **计入总资产概念**
 - [x] 月度资产累计图增强：
   - [x] 账户筛选开关（所有账户 / 仅计入总资产）
   - [x] 年度增长金额显示
   - [x] 优化计算逻辑（区分收支、转账、借贷）
-- [x] 账户总览中的总资产统计（自动过滤不计入账户）
 - [x] 多账本资产统计（支持多账本聚合）
 
 ### 账户管理功能 ⭐ **核心新增**
-- [x] 账户管理页面（`pages/accounts.client.vue`）
-- [x] 账户总览（总资产、账户数量、类型统计、余额分布）
-- [x] 账户列表（按类型分组，支持展开/收起）
-- [x] 账户操作（添加、编辑、删除、隐藏/显示）
-- [x] **计入总资产开关**（`includeInTotal`字段）
+- [x] 账户管理页面
+- [x] 账户总览、列表、操作、明细
 - [x] 账户间转账功能
 - [x] 账户余额校准
 - [x] 查看账户流水记录
@@ -149,29 +133,32 @@ docker-compose down -v
 - [x] 数据分析页面
   - [x] 支持多账本模式
   - [x] 月度资产累计图增强
-  - [x] 支持两级消费分类
+  - [x] 多账本月度资产累计图
+  - [x] 选中月份收支柱状图
+  - [x] 二级支出类型饼图
   - [x] 单级分类账本自动识别为一级分类
-  - [x] 兼容性图表组件
+  - [x] 年度增长金额显示
+  - [x] 图表交互体验优化
 - [x] 流水管理页面
-  - [x] 支持借贷类型流水
-  - [x] 转账类型流水增强
+  - [x] 支持借贷、转账类型流水
   - [x] 支持随手记导入
-  - [x] 批量操作增强
-  - [x] 筛选功能增强
+  - [x] 批量、筛选功能增强
 - [x] 日历页面
   - [x] 多账本日历支持
   - [x] 收支统计增强
   - [x] 月度流水明细支持
-- [x] 图表功能增强
-  - [x] 多账本月度资产累计图
-  - [x] 选中月份收支柱状图
-  - [x] 二级行业类型饼图
-  - [x] 年度增长金额显示
-  - [x] 图表交互体验优化
 - [x] 数据导入功能增强
   - [x] 支持随手记（Wacai）Excel文件导入
   - [x] 账本数据导入验证增强
   - [x] 导入数据冲突检测
+
+## 待完善功能
+- [ ] 引入AI 做账单自动分类
+- [ ] 资产统计的更多维度分析
+- [ ] 更多数据导入格式支持
+- [ ] 借贷功能的前端交互优化
+- [ ] 多账本功能的性能优化
+- [ ] 账户管理功能的批量操作
 
 ### 账本依赖情况总结
 
@@ -187,13 +174,6 @@ docker-compose down -v
 | 类型管理 | ✅ **是** | 类型配置关联账本 |
 | 账本管理 | ✅ **是** | 账本管理页面本身 |
 
-## 待完善功能
-- [ ] 引入AI 做账单自动分类
-- [ ] 资产统计的更多维度分析
-- [ ] 更多数据导入格式支持
-- [ ] 借贷功能的前端交互优化
-- [ ] 多账本功能的性能优化
-- [ ] 账户管理功能的批量操作
 
 ## 版本信息
 - **原项目版本**: 4.3.7

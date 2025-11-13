@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SystemSetting {
+  id           Int      @id
+  title        String?
+  description  String?
+  keywords     String?
+  version      String?
+  openRegister Boolean  @default(false)
+  createDate   DateTime @default(now())
+  updateBy     DateTime @default(now())
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String
+  password   String
+  name       String?
+  email      String?
+  createDate DateTime @default(now())
+}
+
+model Book {
+  id         Int      @id @default(autoincrement())
+  bookId     String   @unique
+  bookName   String
+  userId     Int
+  createDate DateTime @default(now())
+  shareKey   String?
+  budget     Float?
+  color      String   @default("#3B82F6")
+  flows      Flow[]   @relation("BookFlows")
+}
+
+model Flow {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  bookId         String
+  day            String
+  flowType       String?
+  industryType   String?
+  payType        String?
+  money          Float?
+  name           String?
+  description    String?
+  invoice        String?
+  attribution    String?
+  eliminate      Int?      @default(0)
+  origin         String?
+  accountId      Int?
+  transferId     Int?
+  // 借贷相关字段
+  loanType       String?   // 借贷类型：借入、借出、收款、还款
+  counterparty   String?   // 借贷对象
+  relatedFlowId  Int?      // 关联的对应流水ID
+  relatedAccountId Int?    // 关联的另一个账户ID（用于借贷记录）
+  // 新增显示字段：用于统一显示逻辑
+  displayFlowType    String?  // 显示用的流水类型：借贷、转账
+  displayIndustryType String? // 显示用的支出/收入类型：借款、还款、借入、收款、转账
+  book           Book?     @relation("BookFlows", fields: [bookId], references: [bookId])
+  account        Account?  @relation("AccountFlows", fields: [accountId], references: [id])
+  relatedAccount Account?  @relation("RelatedAccountFlows", fields: [relatedAccountId], references: [id])
+  transfer       Transfer? @relation("TransferFlows", fields: [transferId], references: [id])
+  relatedFlow    Flow?     @relation("RelatedFlows", fields: [relatedFlowId], references: [id])
+  relatedFlows   Flow[]    @relation("RelatedFlows")
+}
+
+model Budget {
+  id     Int    @id @default(autoincrement())
+  bookId String
+  userId Int
+  month  String @unique
+  budget Float?
+  used   Float?
+}
+
+model FixedFlow {
+  id           Int      @id @default(autoincrement())
+  bookId       String
+  userId       Int
+  month        String?
+  money        Float?
+  name         String?
+  description  String?
+  flowType     String?
+  industryType String?
+  payType      String?
+  attribution  String?
+  accountId    Int?
+  account      Account? @relation("AccountFixedFlows", fields: [accountId], references: [id])
+}
+
+model TypeRelation {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  bookId String
+  source String
+  target String
+}
+
+model Account {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  name          String
+  type          String
+  balance       Float       @default(0)
+  currency      String      @default("CNY")
+  isHidden      Boolean     @default(false)
+  includeInTotal Boolean    @default(true)
+  createDate    DateTime    @default(now())
+  updateDate    DateTime    @updatedAt
+  fixedFlows    FixedFlow[] @relation("AccountFixedFlows")
+  flows         Flow[]      @relation("AccountFlows")
+  relatedFlows  Flow[]      @relation("RelatedAccountFlows")
+  transfersFrom Transfer[]  @relation("TransferFrom")
+  transfersTo   Transfer[]  @relation("TransferTo")
+
+  @@unique([userId, name], name: "accounts_userId_name_unique")
+  @@map("accounts")
+}
+
+model Transfer {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  fromAccountId Int
+  toAccountId   Int
+  amount        Float
+  day           String
+  name          String?
+  description   String?
+  createDate    DateTime @default(now())
+  // 新增字段：统一管理借贷和转账
+  transferType  String   @default("transfer") // transfer: 转账, loan: 借贷
+  loanType      String?  // 借贷类型：借入、借出、收款、还款
+  counterparty  String?   // 借贷对象
+  flows         Flow[]   @relation("TransferFlows")
+  fromAccount   Account  @relation("TransferFrom", fields: [fromAccountId], references: [id])
+  toAccount     Account  @relation("TransferTo", fields: [toAccountId], references: [id])
+
+  @@map("transfers")
+}
+
+model Receivable {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  bookId      String
+  occurDay    String
+  money       Float
+  name        String?
+  description String?
+  status      Int      @default(0) // 0: 待收款, 1: 已收款
+  createDate  DateTime @default(now())
+  updateDate  DateTime @updatedAt
+
+  @@map("receivables")
+}

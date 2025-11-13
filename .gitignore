@@ -1,0 +1,46 @@
+# Nuxt dev/build outputs
+.output
+.data
+data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Socket files and temporary files
+*.sock
+*.tmp
+*.temp
+.tmp
+.temp
+
+# Docker
+docker/db/
+docker/data/
+docker/db-test/
+docker/data-test/
+docker/docker-compose-test.yaml
+
+# Coverage
+coverage/
+
+local_work/
+
+

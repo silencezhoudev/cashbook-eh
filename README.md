@@ -18,7 +18,7 @@
 
 ## 简述（Description）
 
-基于原项目 [dingdangdog/cashbook](https://github.com/dingdangdog/cashbook) 的二次开发改动，之前一直使用随手记进行记账，为了数据安全和功能定制化需求，基于 cashbook 进行了二次开发，重点增强了资产管理概览等核心功能。图表也按照自己的需要重新画了。本项目地址：[silencezhoudev/cashbook-eh](https://github.com/silencezhoudev/cashbook-eh)
+基于原项目 [dingdangdog/cashbook](https://github.com/dingdangdog/cashbook) 的二次开发改动，之前一直使用随手记进行记账，为了数据安全和功能定制化需求，基于 cashbook 进行了二次开发，重点增强了资产管理概览等核心功能。图表也按照自己的需要重新构建过。
 
 ## 部署说明
 
@@ -81,7 +81,7 @@ docker-compose down -v
 
 ## 功能预览（Screenshots）
 <details>
-<summary>📸 点击展开查看所有截图（静态展示）</summary>
+<summary>📸 点击展开查看所有截图（测试数据）</summary>
 
 <div align="center" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
   <div>

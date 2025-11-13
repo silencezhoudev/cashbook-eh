@@ -6,30 +6,19 @@
 <p align="center">
   <img alt="release" src="https://img.shields.io/github/v/release/silencezhoudev/cashbook-eh" />
   <img alt="stars" src="https://img.shields.io/github/stars/silencezhoudev/cashbook-eh" />
-  <img alt="dorks" src="https://img.shields.io/github/forks/silencezhoudev/cashbook-eh" />
+  <img alt="forks" src="https://img.shields.io/github/forks/silencezhoudev/cashbook-eh" />
 </p>
 <p align="center">
   <img alt="issues-open" src="https://img.shields.io/github/issues/silencezhoudev/cashbook-eh?color=important" />
   <img alt="issues-close" src="https://img.shields.io/github/issues-closed/silencezhoudev/cashbook-eh?color=green" />
   <img alt="license" src="https://img.shields.io/badge/license-MIT-yellow.svg" />
   <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/silencezhoudev/cashbook-eh.svg" />
-<!--   <img alt="GitHub Releases Download" src="https://img.shields.io/github/downloads/silencezhoudev/cashbook-eh/total.svg" /> -->
 </p>
 
 
 ## 简述（Description）
 
 基于原项目 [dingdangdog/cashbook](https://github.com/dingdangdog/cashbook) 的二次开发改动，之前一直使用随手记进行记账，为了数据安全和功能定制化需求，基于 cashbook 进行了二次开发，重点增强了资产管理概览等核心功能。图表也按照自己的需要重新画了。本项目地址：[silencezhoudev/cashbook-eh](https://github.com/silencezhoudev/cashbook-eh)
-
-## 版本信息
-- **原项目版本**: 4.3.7
-- **当前版本**: 1.3.13
-
-
-**重要提示：如果需要部署到公网，请自行修改各类环境变量！！！**  
-（如：后台账号密码、数据库密码等）
-
----
 
 ## 部署说明
 
@@ -161,58 +150,33 @@ docker-compose down -v
 - [x] 查看账户流水记录
 - [x] **完全独立于账本**（账户是用户级别的全局资源）
 
-### 流水管理页面
-- [x] 支持借贷类型流水
-- [x] 转账类型流水增强
-- [x] 支持随手记导入
-- [x] 批量操作增强
-- [x] 筛选功能增强
-
-### 数据分析页面
-- [x] 支持多账本模式
-- [x] 月度资产累计图增强
-- [x] 支持两级消费分类
-- [x] 单级分类账本自动识别为一级分类
-- [x] 兼容性图表组件
-
-### 日历页面
-- [x] 多账本日历支持
-- [x] 收支统计增强
-- [x] 月度流水明细支持
-
-### 图表功能增强
-- [x] 多账本月度资产累计图
-- [x] 选中月份收支柱状图
-- [x] 二级行业类型饼图
-- [x] 年度增长金额显示
-- [x] 图表交互体验优化
-
-### 数据导入功能增强
-- [x] 支持随手记（Wacai）Excel文件导入
-- [x] 账本数据导入验证增强
-- [x] 导入数据冲突检测
-
-### 数据迁移和维护功能
-- [x] 数据迁移工具
-- [x] 流水账户迁移
-- [x] 孤儿数据清理
-- [x] 余额重新计算
-- [x] 数据验证工具
-
----
-
-## 账本概念的重大变化 ⚠️ **重要**
-
-### 原项目设计
-- 账本是**全局概念**，几乎所有功能都依赖账本
-- 流水、账户、转账等都需要关联账本
-- 用户必须选择一个账本才能使用系统
-
-### 当前项目设计
-- **账本不再是全局概念**，部分功能已独立于账本
-- **账户管理完全独立**: 账户是用户级别的资源，不依赖账本
-- **统一转账管理弱化账本**: 虽然转账记录关联账本，但页面以账户为中心
-- **部分功能仍依赖账本**: 流水管理、预算管理、待收款管理等仍基于账本
+### 其他功能增强
+- [x] 数据分析页面
+  - [x] 支持多账本模式
+  - [x] 月度资产累计图增强
+  - [x] 支持两级消费分类
+  - [x] 单级分类账本自动识别为一级分类
+  - [x] 兼容性图表组件
+- [x] 流水管理页面
+  - [x] 支持借贷类型流水
+  - [x] 转账类型流水增强
+  - [x] 支持随手记导入
+  - [x] 批量操作增强
+  - [x] 筛选功能增强
+- [x] 日历页面
+  - [x] 多账本日历支持
+  - [x] 收支统计增强
+  - [x] 月度流水明细支持
+- [x] 图表功能增强
+  - [x] 多账本月度资产累计图
+  - [x] 选中月份收支柱状图
+  - [x] 二级行业类型饼图
+  - [x] 年度增长金额显示
+  - [x] 图表交互体验优化
+- [x] 数据导入功能增强
+  - [x] 支持随手记（Wacai）Excel文件导入
+  - [x] 账本数据导入验证增强
+  - [x] 导入数据冲突检测
 
 ### 账本依赖情况总结
 
@@ -246,10 +210,7 @@ docker-compose down -v
 - [x] 多账本图表支持
 - [x] 增强交互体验
 
----
-
 ## 待完善功能
-
 - [ ] 引入AI 做账单自动分类
 - [ ] 资产统计的更多维度分析
 - [ ] 更多数据导入格式支持
@@ -257,7 +218,12 @@ docker-compose down -v
 - [ ] 多账本功能的性能优化
 - [ ] 账户管理功能的批量操作
 
----
+## 版本信息
+- **原项目版本**: 4.3.7
+- **当前版本**: 1.3.13
+
+**重要提示：如果需要部署到公网，请自行修改各类环境变量！！！**  
+（如：后台账号密码、数据库密码等）
 
 **最后更新**: 2025-11-12  
 **基于原项目**: [dingdangdog/cashbook v4.3.7](https://github.com/dingdangdog/cashbook)

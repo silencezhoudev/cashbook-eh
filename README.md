@@ -4,13 +4,13 @@
 </div>
 
 <p align="center">
-  <img alt="release" src="https://custom-icon-badges.demolab.com/github/v/release/silencezhoudev/cashbook-eh?logo=github" />
-  <img alt="stars" src="https://custom-icon-badges.demolab.com/github/stars/silencezhoudev/cashbook-eh?logo=github" />
-  <img alt="forks" src="https://custom-icon-badges.demolab.com/github/forks/silencezhoudev/cashbook-eh?logo=github" />
+  <!-- <img alt="release" src="https://img.shields.io/github/v/release/silencezhoudev/cashbook-eh" /> -->
+  <img alt="stars" src="https://img.shields.io/github/stars/silencezhoudev/cashbook-eh" />
+  <img alt="forks" src="https://img.shields.io/github/forks/silencezhoudev/cashbook-eh" />
 </p>
 <p align="center">
-  <img alt="issues-open" src="https://custom-icon-badges.demolab.com/github/issues-raw/silencezhoudev/cashbook-eh?logo=github" />
-  <img alt="issues-close" src="https://custom-icon-badges.demolab.com/github/issues-closed-raw/silencezhoudev/cashbook-eh?logo=github" />
+  <!-- <img alt="issues-open" src="https://img.shields.io/github/issues/silencezhoudev/cashbook-eh?color=important" /> -->
+  <img alt="issues-close" src="https://img.shields.io/github/issues-closed/silencezhoudev/cashbook-eh?color=green" />
   <img alt="license" src="https://img.shields.io/badge/license-MIT-yellow.svg" />
   <a href="https://hub.docker.com/repository/docker/silencezhoudev/cashbook">
     <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/silencezhoudev/cashbook.svg" />

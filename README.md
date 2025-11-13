@@ -10,7 +10,7 @@
 </p>
 <p align="center">
   <!-- <img alt="issues-open" src="https://img.shields.io/github/issues/silencezhoudev/cashbook-eh?color=important" /> -->
-  <img alt="issues-close" src="https://img.shields.io/github/issues-closed/silencezhoudev/cashbook-eh?color=green" />
+  <!-- <img alt="issues-close" src="https://img.shields.io/github/issues-closed/silencezhoudev/cashbook-eh?color=green" /> -->
   <img alt="license" src="https://img.shields.io/badge/license-MIT-yellow.svg" />
   <a href="https://hub.docker.com/repository/docker/silencezhoudev/cashbook">
     <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/silencezhoudev/cashbook.svg" />

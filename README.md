@@ -1,5 +1,5 @@
 <div align="center" style="display:flex;align-items:center;justify-content:center;">
-<img src="/public/logo.png" width="80px" alt="cashbook" />
+<img src="public/logo.png" width="80px" alt="cashbook" />
 <h1>Cashbook</h1>
 </div>
 
@@ -94,61 +94,45 @@ docker-compose down -v
 ---
 
 ## 功能预览（Screenshots）
-
-<div align="center">
-  <div style="overflow-x: auto; white-space: nowrap; padding: 20px 0; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
-    <img src="/public/screenshots/1.日历.jpg" alt="日历" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/2.资产.jpg" alt="资产" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/3.分析.jpg" alt="分析" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/4.分析明细.jpg" alt="分析明细" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/5.流水.jpg" alt="流水" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/6.流水导入.jpg" alt="流水导入" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/7.流水分析.jpg" alt="流水分析" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/8.账户.jpg" alt="账户" style="height: 400px; margin-right: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-    <img src="/public/screenshots/9.流水收拢.jpg" alt="流水收拢" style="height: 400px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: inline-block; vertical-align: middle;" />
-  </div>
-  <p style="margin-top: 10px; color: #666; font-size: 14px;">👆 左右滑动或拖动滚动条查看所有功能截图</p>
-</div>
-
 <details>
 <summary>📸 点击展开查看所有截图（静态展示）</summary>
 
 <div align="center" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
   <div>
     <h4>1. 日历</h4>
-    <img src="/public/screenshots/1.日历.jpg" alt="日历" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/1.日历.jpg" alt="日历" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>2. 资产</h4>
-    <img src="/public/screenshots/2.资产.jpg" alt="资产" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/2.资产.jpg" alt="资产" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>3. 分析</h4>
-    <img src="/public/screenshots/3.分析.jpg" alt="分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/3.分析.jpg" alt="分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>4. 分析明细</h4>
-    <img src="/public/screenshots/4.分析明细.jpg" alt="分析明细" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/4.分析明细.jpg" alt="分析明细" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>5. 流水</h4>
-    <img src="/public/screenshots/5.流水.jpg" alt="流水" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/5.流水.jpg" alt="流水" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>6. 流水导入</h4>
-    <img src="/public/screenshots/6.流水导入.jpg" alt="流水导入" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/6.流水导入.jpg" alt="流水导入" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>7. 流水分析</h4>
-    <img src="/public/screenshots/7.流水分析.jpg" alt="流水分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/7.流水分析.jpg" alt="流水分析" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>8. 账户</h4>
-    <img src="/public/screenshots/8.账户.jpg" alt="账户" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/8.账户.jpg" alt="账户" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
   <div>
     <h4>9. 流水收拢</h4>
-    <img src="/public/screenshots/9.流水收拢.jpg" alt="流水收拢" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+    <img src="public/screenshots/9.流水收拢.jpg" alt="流水收拢" style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
   </div>
 </div>
 </details>

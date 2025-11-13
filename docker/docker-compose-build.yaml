@@ -9,7 +9,7 @@ services:
       dockerfile: docker/Dockerfile
       args:
         APP_VERSION: "1.3.12"
-    image: silencezhoudev/cashbook:latest
+    image: silencezhoudev/cashbook:1.3.12
     restart: always
     # network_mode: "host"
     env_file:

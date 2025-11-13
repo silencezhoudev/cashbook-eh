@@ -257,3 +257,15 @@ export class TransferQuery {
   pageNum?: number = 1;
   pageSize?: number = 100;
 }
+
+// 系统设置类型定义
+export interface SystemSetting {
+  id: number;
+  title?: string;
+  description?: string;
+  keywords?: string;
+  version?: string;
+  openRegister: boolean;
+  createDate: Date;
+  updateBy: Date;
+}

@@ -1,0 +1,30 @@
+services:
+  main:
+    container_name: cashbook4-orig
+    depends_on: 
+      - "db"
+    image: cashbook:dev
+    restart: always
+    # network_mode: "host"
+    volumes:
+      - ./data:/app/data
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@cashbook_db:5432/cashbook?schema=public"
+      NUXT_DATA_PATH: "/app/data"
+      NUXT_AUTH_SECRET: "auth_secret"
+      NUXT_ADMIN_USERNAME: "admin"
+      NUXT_ADMIN_PASSWORD: "fb35e9343a1c095ce1c1d1eb6973dc570953159441c3ee315ecfefb6ed05f4cc"
+    ports:
+      - 9090:9090
+  db:
+    container_name: cashbook_db
+    image: postgres:17.4-alpine3.21
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cashbook
+    ports:
+      - 6432:5432

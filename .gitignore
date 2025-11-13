@@ -36,9 +36,9 @@ docker/db/
 docker/data/
 docker/db-test/
 docker/data-test/
-#docker/docker-compose-test.yaml
-#docker/docker-compose.yaml.bak
-#docker/docker-compose-build.yaml
+docker/docker-compose-*
+!docker/docker-compose.yaml
+
 
 # Coverage
 coverage/

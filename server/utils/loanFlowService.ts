@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { BalanceService } from './balanceService';
-
-const prisma = new PrismaClient();
+import prisma from '../../lib/prisma';
 
 /**
  * 借贷流水处理服务

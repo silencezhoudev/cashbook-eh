@@ -90,19 +90,26 @@ export default defineEventHandler(async (event) => {
 
   // 编辑转账时不校验余额充足性，允许透支或临时不一致，由后续校验工具处理
 
-  // 计算两条流水（支出/收入）
-  const outFlow = original.flows.find((f: any) => f.flowType === "支出");
-  const inFlow = original.flows.find((f: any) => f.flowType === "收入");
-
-  if (!outFlow || !inFlow) {
-    return error("转账关联流水异常");
-  }
-
+  // 计算两条流水（支出/收入），若缺失则用传入的 bookId 兜底，避免老数据缺流导致报错
   const bookId = String(body.bookId);
+  const outFlow = original.flows.find((f: any) => f.flowType === "支出") || { bookId };
+  const inFlow = original.flows.find((f: any) => f.flowType === "收入") || { bookId };
 
   const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-    // 1) 删除旧的两条流水
-    await tx.flow.deleteMany({ where: { transferId: original.id } });
+    // 1) 先查询所有关联的流水记录，确保全部删除
+    const relatedFlows = await tx.flow.findMany({ 
+      where: { transferId: original.id } 
+    });
+    
+    // 删除所有关联的流水记录（包括可能存在的重复记录）
+    const deletedFlows = await tx.flow.deleteMany({ 
+      where: { transferId: original.id } 
+    });
+    
+    // 验证删除是否成功
+    if (relatedFlows.length > 0 && deletedFlows.count !== relatedFlows.length) {
+      console.warn(`警告: 期望删除 ${relatedFlows.length} 条流水记录，实际删除了 ${deletedFlows.count} 条`);
+    }
 
     // 2) 回滚旧余额影响
     await tx.account.update({ where: { id: oldFromId }, data: { balance: { increment: oldAmount } } });

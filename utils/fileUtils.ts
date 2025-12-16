@@ -5,6 +5,7 @@ export const exportJson = (fileName: string, data: string) => {
 };
 
 export const exportCsv = (fileName: string, data: any[]) => {
+  // 兼容空数据的场景，直接返回
   if (!data || data.length === 0) {
     console.warn("No data to export");
     return;
@@ -73,6 +74,38 @@ export const exportCsv = (fileName: string, data: any[]) => {
   });
 
   // 使用writeFile函数下载文件
+  writeFile(fileName, csvContent);
+};
+
+export const exportCsvWithRows = (
+  fileName: string,
+  headers: string[],
+  rows: Array<Array<string | number | boolean | null | undefined>>
+) => {
+  if (!headers || headers.length === 0) {
+    console.warn("No headers provided for csv export");
+    return;
+  }
+
+  const escapeField = (field: string | number | boolean | null | undefined) => {
+    if (field === null || field === undefined) {
+      return "";
+    }
+    const value = String(field);
+    if (value.includes(",") || value.includes("\n") || value.includes('"')) {
+      return `"${value.replace(/"/g, '""')}"`;
+    }
+    return value;
+  };
+
+  const escapedRows = rows.map((row) =>
+    headers.map((_, index) => escapeField(row[index]))
+  );
+
+  let csvContent = "\ufeff";
+  csvContent += headers.join(",") + "\n";
+  csvContent += escapedRows.map((row) => row.join(",")).join("\n");
+
   writeFile(fileName, csvContent);
 };
 

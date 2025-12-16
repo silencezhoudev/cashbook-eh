@@ -22,8 +22,8 @@ CREATE TABLE "Budget" (
     CONSTRAINT "Budget_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "FixedFlow" (
+-- CreateTable (若已存在则跳过)
+CREATE TABLE IF NOT EXISTS "FixedFlow" (
     "id" SERIAL NOT NULL,
     "bookId" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,

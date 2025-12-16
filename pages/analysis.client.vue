@@ -25,13 +25,18 @@
 
 
     <!-- Content Area -->
-    <div class="md:max-w-[80vw] mx-auto w-full mt-2">
+    <div class="md:max-w-[95vw] mx-auto w-full mt-2">
       <!-- Desktop & Tablet: Chart Carousel -->
       <div class="w-full" v-if="!loading">
         <div
           class="w-full bg-white dark:bg-gray-900 rounded-lg shadow p-2 md:p-4 mb-4"
         >
           <!-- Chart Container -->
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-green-950 dark:text-white">
+              数据分析
+            </h3>
+          </div>
           <div
             class="w-full flex flex-col md:flex-row justify-between md:space-x-4 space-y-4 md:space-y-0 rounded-md p-2"
           >

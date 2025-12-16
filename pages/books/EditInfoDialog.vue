@@ -20,6 +20,16 @@ if (item) {
 
 const isSaving = ref(false);
 
+const normalizeDescription = () => {
+  if (!editItem.value) {
+    return;
+  }
+  if (typeof editItem.value.description === "string") {
+    const trimmed = editItem.value.description.trim();
+    editItem.value.description = trimmed ? trimmed : undefined;
+  }
+};
+
 // 验证表单
 const validateForm = () => {
   formErrors.value = {};
@@ -44,6 +54,7 @@ const save = () => {
     return;
   }
 
+  normalizeDescription();
   isSaving.value = true;
 
   if (editItem.value?.id) {
@@ -181,6 +192,24 @@ const closeOnBackdrop = (event: MouseEvent) => {
             </p>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
               可选项，用于预算管理功能
+            </p>
+          </div>
+
+          <!-- 账本说明 -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              账本说明
+            </label>
+            <textarea
+              v-model="editItem.description"
+              rows="3"
+              placeholder="描述该账本的用途，方便区分"
+              class="w-full px-3 py-2 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-green-950 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600 resize-none"
+            ></textarea>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              建议简要说明账本用途，帮助团队成员理解
             </p>
           </div>
         </form>

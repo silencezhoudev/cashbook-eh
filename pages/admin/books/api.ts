@@ -26,3 +26,18 @@ export const list = (data: Book): Promise<Book[]> => {
 export const all = (): Promise<Book[]> => {
   return doApi.post(`${prefiex}/all`, {});
 };
+
+export const bootstrapRules = (payload: {
+  userId: number;
+  adminAccount?: string;
+  adminPassword?: string;
+}): Promise<any> => {
+  return doApi.post(`api/admin/rules/bootstrap`, payload);
+};
+
+export const rebuildProfile = (payload: {
+  bookId?: string;
+  id?: number;
+}): Promise<any> => {
+  return doApi.post(`api/admin/book/profile/rebuild`, payload);
+};

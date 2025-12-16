@@ -1,11 +1,12 @@
 // swagger.config.ts
 import type { Options } from "swagger-jsdoc";
+import { APP_VERSION_TAG } from "./server/utils/appVersion";
 
 const swaggerDefinition = {
   // openapi: "3.0.0",
   info: {
     title: "Cashbook API",
-    version: "4.3.7",
+    version: APP_VERSION_TAG,
     description:
       "接口文档需要手动维护，因此不能保证完全正确，请以接口实际效果为准！",
   },

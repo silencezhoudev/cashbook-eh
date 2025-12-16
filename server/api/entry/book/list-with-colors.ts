@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
       id: true,
       bookId: true,
       bookName: true,
+      description: true,
       color: true,
       createDate: true
     },

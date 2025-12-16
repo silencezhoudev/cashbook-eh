@@ -321,6 +321,14 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // 确保只查询有关联流水记录的转账（避免查询到已删除但未清理的旧记录）
+  // 如果还没有设置 flows 条件，则添加一个确保至少有一条关联流水记录的条件
+  if (!transferWhere.flows) {
+    transferWhere.flows = {
+      some: {} // 确保至少有一条关联的流水记录
+    };
+  }
+  
   const transfers = await prisma.transfer.findMany({
     where: transferWhere,
     include: {
@@ -400,10 +408,17 @@ export default defineEventHandler(async (event) => {
   // 添加流水数据（排除由转账生成的流水记录，避免重复显示）
   flows.forEach(flow => {
     // 跳过由转账生成的流水记录（收入/支出类型且transferId不为null）
+    // 注意：即使转账记录已被删除，只要transferId不为null，也应该跳过这些流水记录
     if ((flow.flowType === '收入' || flow.flowType === '支出') && 
         flow.industryType === '转账' && 
         flow.transferId !== null) {
       console.log(`跳过转账生成的流水记录: ID=${flow.id}, 类型=${flow.flowType}, 转账ID=${flow.transferId}`);
+      return;
+    }
+    
+    // 额外检查：如果flowType是"转账"，也应该跳过（这是转账记录本身，不是流水）
+    if (flow.flowType === '转账' && flow.transferId !== null) {
+      console.log(`跳过转账类型的流水记录: ID=${flow.id}, 转账ID=${flow.transferId}`);
       return;
     }
     
@@ -452,6 +467,12 @@ export default defineEventHandler(async (event) => {
   
   // 添加转账数据
   transfers.forEach(transfer => {
+    // 验证转账是否有有效的关联流水记录，如果没有则跳过（可能是已删除的旧记录）
+    if (!transfer.flows || transfer.flows.length === 0) {
+      console.warn(`跳过没有关联流水记录的转账: transferId=${transfer.id}`);
+      return;
+    }
+    
     // 从关联的流水记录中获取账本信息
     const transferBookIds = transfer.flows?.map(flow => flow.bookId) || [];
     const transferBooks = transferBookIds.map(bookId => bookMap.get(bookId)).filter(Boolean);

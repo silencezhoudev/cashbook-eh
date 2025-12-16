@@ -1,3 +1,5 @@
+import { APP_VERSION_TAG } from "./server/utils/appVersion";
+
 // nuxt.config.ts - 修复文件监听问题
 export default defineNuxtConfig({
   ssr: true,
@@ -117,12 +119,14 @@ export default defineNuxtConfig({
   //   url: "/api/openapi.json",
   // },
   runtimeConfig: {
-    public: {},
-    appVersion: "",
+    appVersion: APP_VERSION_TAG,
     dataPath: "",
     authSecret: "",
     adminUsername: "",
     adminPassword: "",
+    public: {
+      appVersion: APP_VERSION_TAG,
+    },
   },
 
   modules: [

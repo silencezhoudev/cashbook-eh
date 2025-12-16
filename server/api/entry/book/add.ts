@@ -27,7 +27,7 @@ import { getUUID } from "~/utils/common";
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); // 获取请求体
-  const { bookName, budget } = body;
+  const { bookName, budget, description } = body;
 
   const userId = await getUserId(event);
 
@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
       userId,
       bookName,
       budget: Number(budget || 0),
+      description: description ? String(description) : null,
     },
   });
 

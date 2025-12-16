@@ -23,8 +23,8 @@ export const singleBookCommon = async (data: any): Promise<CommonChartData[]> =>
   });
 };
 
-// 多账本API（新增）
-export const multiBookDaily = async (bookIds: string[], data: any): Promise<CommonChartData[]> => {
+// 多账本日维度数据（用于折线图）
+export const multiBookDailyChart = async (bookIds: string[], data: any): Promise<CommonChartData[]> => {
   return doApi.post<CommonChartData[]>("api/entry/analytics/multi-book-daily", {
     bookIds,
     ...data
@@ -72,7 +72,7 @@ export const getAnalyticsData = async (endpoint: string, data: any, mode: string
     
     switch (endpoint) {
       case 'daily':
-        return multiBookDaily(selectedBookIds, data)
+        return multiBookDailyChart(selectedBookIds, data)
       case 'month':
         return multiBookMonth(selectedBookIds, data)
       case 'common':

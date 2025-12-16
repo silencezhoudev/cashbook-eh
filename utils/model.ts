@@ -200,6 +200,8 @@ export interface Book {
   shareKey?: string;
   budget?: number;
   color?: string;
+  description?: string;
+  profileSummary?: string;
 }
 
 // 多账本日历相关类型

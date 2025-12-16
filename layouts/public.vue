@@ -126,8 +126,18 @@ const openChangePasswordDialog = () => {
 // Version check (keeping original functionality)
 const checkVersion = () => {
   fetch("https://api.github.com/repos/silencezhoudev/cashbook-eh/releases/latest")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        console.warn("Skip version check: request failed", res.status);
+        return null;
+      }
+      return res.json();
+    })
     .then((data) => {
+      if (!data || !data.tag_name || typeof data.tag_name !== "string") {
+        // 数据异常时静默跳过，避免阻塞页面
+        return;
+      }
       const latestVersion = data.tag_name.replace("v", "");
       const currentVersion = SystemConfig.value?.version;
       const newVersionNotify = localStorage.getItem(latestVersion);
@@ -194,7 +204,7 @@ const checkVersion = () => {
       :class="{ 'pb-12': isMobile }"
     >
       <!-- Sidebar - Desktop -->
-      <div v-if="!isMobile" class="w-64 flex-shrink-0 h-full overflow-y-auto">
+      <div v-if="!isMobile" class="w-40 flex-shrink-0 h-full overflow-y-auto">
         <LayoutAppSidebar
           :is-open="true"
           :is-mobile="false"

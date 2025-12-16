@@ -61,6 +61,7 @@
       @custom-import="showFlowCustomImport"
       @import-json="openJsonImport"
       @import-wacai="openWacaiImport"
+      @smart-import="openSmartImport"
       @export-json="exportJson"
       @export-csv="exportCsv"
       @download-template="downloadCsvTemplate"
@@ -203,6 +204,7 @@
               <option value="">不修改</option>
               <option value="支出">支出</option>
               <option value="收入">收入</option>
+              <option value="转账">转账</option>
               <option value="不计收支">不计收支</option>
             </select>
           </div>
@@ -1127,6 +1129,11 @@ const closeCustomImport = () => {
 const openJsonImport = () => {
   showFlowJsonImportDialog.value = true;
   importDrawer.value = false;
+};
+
+const openSmartImport = () => {
+  importDrawer.value = false;
+  navigateTo("/flows/smart-import");
 };
 
 const exportJson = () => {

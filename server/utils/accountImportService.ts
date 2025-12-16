@@ -63,23 +63,54 @@ export class AccountImportService {
     
     let cleanName = String(name).trim();
     
+    // 移除开头的"识别："等前缀
+    cleanName = cleanName.replace(/^识别[：:]\s*/, '');
+    
     // 移除开头的逗号、空格等无效字符
     cleanName = cleanName.replace(/^[，,、\s]+/, '');
     
     // 移除结尾的逗号、空格等无效字符
     cleanName = cleanName.replace(/[，,、\s]+$/, '');
     
-    // 移除数字后缀（如"支付宝总12000" -> "支付宝总", "建设银行储蓄卡17800" -> "建设银行储蓄卡"）
-    cleanName = cleanName.replace(/[总]?\d+\.?\d*$/, '');
+    // 先提取银行卡号（括号中的数字），需要在移除&之前提取
+    const cardNumberMatch = cleanName.match(/\((\d+)\)/);
+    const cardNumber = cardNumberMatch ? cardNumberMatch[1] : null;
     
-    // 移除银行卡类型后缀
+    // 移除额外的后缀信息（如"&红包"、"&余额"、"&支付宝随机抽立减"等）
+    // 移除第一个&及其后面的所有内容（包括后续的&）
+    const firstAmpersandIndex = cleanName.indexOf('&');
+    if (firstAmpersandIndex !== -1) {
+      cleanName = cleanName.substring(0, firstAmpersandIndex).trim();
+    }
+    
+    // 移除所有剩余的 & 和 | 符号（以防万一）
+    cleanName = cleanName.replace(/[&|｜]/g, ' ').trim();
+    
+    // 移除数字后缀（如"支付宝总12000" -> "支付宝总"），但保留银行卡号
+    // 如果末尾是纯数字且不是银行卡号格式，才移除
+    if (!cardNumber) {
+      cleanName = cleanName.replace(/[总]?\d+\.?\d*$/, '');
+    }
+    
+    // 移除银行卡类型后缀（但保留银行名称）
     cleanName = cleanName.replace(/储蓄卡$|借记卡$|信用卡$|电子钱包$|微信支付$|银行卡$/g, '');
     
     // 移除多余的空格
     cleanName = cleanName.replace(/\s+/g, ' ');
     
-    // 移除特殊字符，但保留中文、英文、数字和空格
-    cleanName = cleanName.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s]/g, '');
+    // 移除特殊字符，但保留中文、英文、数字、空格和括号（用于银行卡号）
+    cleanName = cleanName.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s()]/g, '');
+    
+    // 如果有银行卡号，确保格式为"银行名称(卡号)"
+    if (cardNumber) {
+      // 移除原有的括号和数字
+      cleanName = cleanName.replace(/\(?\d+\)?/g, '');
+      cleanName = cleanName.trim();
+      // 重新添加银行卡号
+      if (cleanName) {
+        cleanName = `${cleanName}(${cardNumber})`;
+      }
+    }
     
     const result = cleanName.trim();
     
@@ -119,6 +150,34 @@ export class AccountImportService {
     console.log(`未找到精确匹配的账户: ${params.accountName}`);
     
     return null;
+  }
+  
+  /**
+   * 提取所有可能的银行关键词
+   */
+  private static extractAllBankKeywords(accountName: string): string[] {
+    const keywords: string[] = [];
+    
+    if (!accountName) return keywords;
+    
+    // 提取银行名称
+    const bankName = this.extractBankNameForMatching(accountName);
+    if (bankName) {
+      keywords.push(bankName);
+    }
+    
+    // 提取其他可能的匹配词（去除卡号、卡类型等）
+    let cleaned = accountName
+      .replace(/\([^)]*\)/g, '') // 移除括号内容（卡号）
+      .replace(/储蓄卡|借记卡|信用卡|银行卡/g, '') // 移除卡类型
+      .replace(/\d+/g, '') // 移除数字
+      .trim();
+    
+    if (cleaned && cleaned.length >= 2) {
+      keywords.push(cleaned);
+    }
+    
+    return keywords;
   }
   
   /**

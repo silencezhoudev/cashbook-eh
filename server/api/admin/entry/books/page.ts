@@ -1,4 +1,5 @@
 import prisma from "~/lib/prisma";
+import { AccountProfileService } from "~/server/utils/accountProfileService";
 
 /**
  * @swagger
@@ -65,10 +66,45 @@ export default defineEventHandler(async (event) => {
       createDate: "desc",
     },
   ];
+  const buildProfileSummaryMap = async (books: any[]) => {
+    if (!books.length) {
+      return new Map<string, string>();
+    }
+    const bookIds = books.map((book: any) => book.bookId);
+    const profiles = await prisma.bookProfile.findMany({
+      where: {
+        bookId: {
+          in: bookIds,
+        },
+      },
+    });
+
+    const summaryMap = new Map<string, string>();
+    for (const profile of profiles) {
+      const parsedProfile = {
+        categoryWeights: JSON.parse(profile.categoryWeights || "{}"),
+        merchantKeywords: JSON.parse(profile.merchantKeywords || "{}"),
+        payTypeStats: JSON.parse(profile.payTypeStats || "{}"),
+        amountDistribution: JSON.parse(profile.amountDistribution || "{}"),
+        totalFlows: profile.totalFlows,
+      };
+      summaryMap.set(
+        profile.bookId,
+        AccountProfileService.buildProfileSummary(parsedProfile)
+      );
+    }
+    return summaryMap;
+  };
+
   if (pageSize == -1) {
     // 查询全部
     const datas = await prisma.book.findMany({ where, orderBy });
-    return success({ total: datas.length, data: datas, pages: 1 });
+    const summaryMap = await buildProfileSummaryMap(datas);
+    const enriched = datas.map((book) => ({
+      ...book,
+      profileSummary: summaryMap.get(book.bookId) || null,
+    }));
+    return success({ total: datas.length, data: enriched, pages: 1 });
   }
   // 【条件、排序、分页】 组合查询
   const users = await prisma.book.findMany({
@@ -81,5 +117,11 @@ export default defineEventHandler(async (event) => {
   const totals = await prisma.book.count({ where });
   const totalPages = Math.ceil(totals / pageSize);
 
-  return success({ total: totals, data: users, pages: totalPages });
+  const summaryMap = await buildProfileSummaryMap(users);
+  const enrichedUsers = users.map((book) => ({
+    ...book,
+    profileSummary: summaryMap.get(book.bookId) || null,
+  }));
+
+  return success({ total: totals, data: enrichedUsers, pages: totalPages });
 });

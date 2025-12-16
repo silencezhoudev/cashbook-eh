@@ -4,9 +4,9 @@ ALTER TABLE "Book" ADD COLUMN "color" VARCHAR(7) DEFAULT '#3B82F6';
 -- 为现有数据设置默认颜色（使用预定义颜色轮换）
 WITH color_cycle AS (
   SELECT 
-    id,
-    bookId,
-    bookName,
+    "id",
+    "bookId",
+    "bookName",
     CASE 
       WHEN (ROW_NUMBER() OVER (ORDER BY id) - 1) % 8 = 0 THEN '#3B82F6'  -- 蓝色
       WHEN (ROW_NUMBER() OVER (ORDER BY id) - 1) % 8 = 1 THEN '#EF4444'  -- 红色

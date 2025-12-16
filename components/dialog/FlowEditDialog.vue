@@ -449,9 +449,12 @@ const showLoanFields = computed(() => {
   return flowEdit.value.flowType === "借贷";
 });
 
-// 是否为转账/借贷类型
+// 是否为转账/借贷类型（不仅仅依赖 flowType，还要检查 transferId 和 attribution）
 const isTransferLike = computed(() => {
-  return flowEdit.value.flowType === "转账" || flowEdit.value.flowType === "借贷";
+  const hasTransferId = flowEdit.value.transferId || (flowEdit.value as any).originalTransfer?.id;
+  const isTransferByAttribution = flowEdit.value.attribution === '转账' || flowEdit.value.attribution === '借贷';
+  const isTransferByFlowType = flowEdit.value.flowType === "转账" || flowEdit.value.flowType === "借贷";
+  return hasTransferId || isTransferByAttribution || isTransferByFlowType;
 });
 
 const nameList = ref<string[]>([]);
@@ -512,21 +515,23 @@ onMounted(() => {
       flowEdit.value.accountId = (flow as any).account.id;
     }
     
-    // 处理借贷类型的预填充
-    if (flowEdit.value.attribution === '借贷' || flowEdit.value.flowType === '借贷' || flowEdit.value.loanType) {
-      // 借贷类型时强制使用借贷流水类型
-      flowEdit.value.flowType = '借贷';
-      // 预填充借贷相关字段
-      if (!flowEdit.value.loanType && (flow as any).loanType) {
-        flowEdit.value.loanType = (flow as any).loanType;
-      }
-      if (!flowEdit.value.counterparty && (flow as any).counterparty) {
-        flowEdit.value.counterparty = (flow as any).counterparty;
-      }
-    }
+    // 判断是否为转账/借贷类型（不仅仅依赖 flowType，还要检查 transferId 和 attribution）
+    const hasTransferId = flowEdit.value.transferId || (flow as any).originalTransfer?.id;
+    const isTransferByAttribution = flowEdit.value.attribution === '转账' || flowEdit.value.attribution === '借贷';
+    const isTransferByFlowType = flowEdit.value.flowType === "转账" || flowEdit.value.flowType === "借贷";
+    const isTransferLike = hasTransferId || isTransferByAttribution || isTransferByFlowType;
     
-    // 兼容：转账编辑时，回填 fromAccountId / toAccountId
-    if (flowEdit.value.flowType === "转账" || flowEdit.value.flowType === "借贷") {
+    // 如果是转账/借贷类型，确保 flowType 正确设置
+    if (isTransferLike) {
+      // 优先从 attribution 判断，然后是 originalTransfer.transferType，最后是 flowType
+      if (flowEdit.value.attribution === '借贷' || (flow as any).originalTransfer?.transferType === 'loan') {
+        flowEdit.value.flowType = '借贷';
+      } else if (!flowEdit.value.flowType || (flowEdit.value.flowType !== "转账" && flowEdit.value.flowType !== "借贷")) {
+        // 如果 flowType 不是转账或借贷，但确实是转账类型，则设置为转账
+        flowEdit.value.flowType = "转账";
+      }
+      
+      // 回填 fromAccountId / toAccountId
       if (!flowEdit.value.fromAccountId) {
         if ((flow as any).fromAccount && (flow as any).fromAccount.id) {
           flowEdit.value.fromAccountId = (flow as any).fromAccount.id;
@@ -541,6 +546,39 @@ onMounted(() => {
           flowEdit.value.toAccountId = (flow as any).originalTransfer.toAccountId;
         }
       }
+      // 确保转账更新时带上 transferId，否则会误走新增逻辑
+      if (!flowEdit.value.transferId && (flow as any).originalTransfer?.id) {
+        flowEdit.value.transferId = (flow as any).originalTransfer.id;
+      }
+      
+      // 从 Transfer 对象中获取借贷相关字段（如果存在）
+      const originalTransfer = (flow as any).originalTransfer;
+      if (originalTransfer) {
+        // 判断是否为借贷类型
+        if (originalTransfer.transferType === 'loan' || flowEdit.value.attribution === '借贷') {
+          flowEdit.value.flowType = '借贷';
+          // 从 Transfer 对象中获取借贷类型和对象
+          if (!flowEdit.value.loanType && originalTransfer.loanType) {
+            flowEdit.value.loanType = originalTransfer.loanType;
+          }
+          if (!flowEdit.value.counterparty && originalTransfer.counterparty) {
+            flowEdit.value.counterparty = originalTransfer.counterparty;
+          }
+        }
+      }
+      
+      // 处理借贷类型的预填充（从 Flow 对象中获取，作为备用）
+      if (flowEdit.value.attribution === '借贷' || flowEdit.value.flowType === '借贷' || flowEdit.value.loanType) {
+        // 借贷类型时强制使用借贷流水类型
+        flowEdit.value.flowType = '借贷';
+        // 预填充借贷相关字段（如果还没有从 Transfer 中获取到）
+        if (!flowEdit.value.loanType && (flow as any).loanType) {
+          flowEdit.value.loanType = (flow as any).loanType;
+        }
+        if (!flowEdit.value.counterparty && (flow as any).counterparty) {
+          flowEdit.value.counterparty = (flow as any).counterparty;
+        }
+      }
     }
     if (flowEdit.value.day) {
       flowEdit.value.day = flowEdit.value.day;
@@ -551,9 +589,17 @@ onMounted(() => {
       (flow && (flow as any).day) || new Date().toISOString().split("T")[0];
     flowEdit.value = { flowType: "", day } as any;
   }
-  // 清除 id，避免新增逻辑走更新分支
-  if (formTitle[0] === title && (flowEdit.value as any).id) {
-    delete (flowEdit.value as any).id;
+  // 清除 id 和 transferId，避免新增逻辑走更新分支
+  if (formTitle[0] === title) {
+    if ((flowEdit.value as any).id) {
+      delete (flowEdit.value as any).id;
+    }
+    if ((flowEdit.value as any).transferId) {
+      delete (flowEdit.value as any).transferId;
+    }
+    if ((flowEdit.value as any).originalTransfer) {
+      delete (flowEdit.value as any).originalTransfer;
+    }
   }
   // 根据当前 flowType 联动标签与选项
   changeFlowTypes();
@@ -874,8 +920,15 @@ const confirmForm = async (again: boolean) => {
       return;
     }
   }
-  if (flowEdit.value.id) {
-    // 修改
+  const transferId = isTransferLike.value
+    ? (flowEdit.value as any).transferId || (flowEdit.value as any).originalTransfer?.id
+    : null;
+
+  // 判断是新增还是更新：转账类型看 transferId，普通流水看 id
+  const shouldUpdate = isTransferLike.value ? Boolean(transferId) : Boolean(flowEdit.value.id);
+
+  if (shouldUpdate) {
+    // 修改（普通流水依赖 flowId，转账依赖 transferId）
     updateOne();
   } else {
     // 新增
@@ -953,27 +1006,29 @@ const createOne = (again: boolean) => {
 
 // 更新
 const updateOne = () => {
-  if (!flowEdit.value.id) {
-    Alert.error("请选择要修改的数据");
-    return;
-  }
   if (isTransferLike.value) {
-    // 转账编辑：使用后端转账更新（删除后重建）
+    // 转账编辑：使用统一转账更新API（支持借贷和转账）
     const transferId = (flowEdit.value as any).transferId || (flowEdit.value as any).originalTransfer?.id;
     if (!transferId) {
       Alert.error("未找到转账记录ID");
       return;
     }
+    // 判断转账类型
+    const transferType = flowEdit.value.flowType === "借贷" ? "loan" : "transfer";
+    
     doApi
-      .post("api/entry/transfer/update", {
+      .post("api/entry/unified-transfer/update", {
         id: transferId,
         bookId: localStorage.getItem("bookId") || "",
+        transferType: transferType,
         fromAccountId: flowEdit.value.fromAccountId,
         toAccountId: flowEdit.value.toAccountId,
         amount: Number(flowEdit.value.money),
         day: flowEdit.value.day || new Date().toISOString().split("T")[0],
-        name: flowEdit.value.name,
+        name: flowEdit.value.name || (transferType === 'loan' ? '借贷' : '账户转账'),
         description: flowEdit.value.description,
+        loanType: flowEdit.value.loanType,
+        counterparty: flowEdit.value.counterparty
       })
       .then(() => {
         successCallback({} as any);
@@ -982,9 +1037,13 @@ const updateOne = () => {
       })
       .catch((err) => {
         console.log(err);
-        Alert.error("更新出现异常" + err.message);
+        Alert.error("更新出现异常" + (err.message || err.m || "未知错误"));
       });
   } else {
+    if (!flowEdit.value.id) {
+      Alert.error("请选择要修改的数据");
+      return;
+    }
     doApi
       .post<Flow>("api/entry/flow/update", {
         id: flowEdit.value.id,

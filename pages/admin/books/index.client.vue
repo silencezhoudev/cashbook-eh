@@ -5,7 +5,7 @@ definePageMeta({
   middleware: ["admin"],
 });
 
-import { del, page } from "./api";
+import { del, page, bootstrapRules, rebuildProfile } from "./api";
 import { editInfoFlag } from "./flag";
 import EditInfoDialog from "./EditInfoDialog.vue";
 
@@ -74,6 +74,123 @@ const endItem = computed(() => {
   const end = pageQuery.value.pageNum * pageQuery.value.pageSize;
   return Math.min(end, tabledata.value.total || 0);
 });
+
+const ruleUpdateLoading = ref<Record<number, boolean>>({});
+const profileRebuildLoading = ref<Record<number, boolean>>({});
+const profileTooltip = reactive<{
+  id: number | null;
+  text: string;
+  top: number;
+  left: number;
+  placement: "top" | "bottom";
+}>({
+  id: null,
+  text: "",
+  top: 0,
+  left: 0,
+  placement: "bottom",
+});
+
+const triggerRuleBootstrap = (item: Book) => {
+  Confirm.open({
+    title: "更新智能规则",
+    content: `将基于用户 #${item.userId} 的历史流水重新生成智能规则，确认继续吗？`,
+    confirm: () => executeRuleBootstrap(item),
+  });
+};
+
+const executeRuleBootstrap = (item: Book) => {
+  ruleUpdateLoading.value[item.id] = true;
+  bootstrapRules({
+    userId: item.userId,
+  })
+    .then((res) => {
+      const created = res?.created ?? 0;
+      const attempted = res?.attempted ?? 0;
+      Alert.success(
+        attempted > 0
+          ? `已触发规则更新：生成 ${created}/${attempted} 条`
+          : "已触发规则更新"
+      );
+    })
+    .catch((err) => {
+      const message =
+        err?.m || err?.message || err?.data?.message || "更新规则失败";
+      Alert.error(message);
+    })
+    .finally(() => {
+      delete ruleUpdateLoading.value[item.id];
+      ruleUpdateLoading.value = { ...ruleUpdateLoading.value };
+    });
+};
+
+const triggerProfileRebuild = (item: Book) => {
+  Confirm.open({
+    title: "重建账本画像",
+    content: `将基于账本【${item.bookName}】历史流水重新生成画像描述，确认继续吗？`,
+    confirm: () => executeProfileRebuild(item),
+  });
+};
+
+const executeProfileRebuild = (item: Book) => {
+  profileRebuildLoading.value[item.id] = true;
+  rebuildProfile({
+    bookId: item.bookId,
+  })
+    .then((res) => {
+      const message =
+        res?.message || `账本【${item.bookName}】画像已重建`;
+      Alert.success(message);
+      getPages();
+    })
+    .catch((err) => {
+      const message =
+        err?.m || err?.message || err?.data?.message || "重建账本画像失败";
+      Alert.error(message);
+    })
+    .finally(() => {
+      delete profileRebuildLoading.value[item.id];
+      profileRebuildLoading.value = { ...profileRebuildLoading.value };
+    });
+};
+
+const showProfileTooltip = (item: Book, event: MouseEvent) => {
+  const target = event.currentTarget as HTMLElement | null;
+  if (!target) return;
+
+  const rect = target.getBoundingClientRect();
+  const viewportWidth = document.documentElement.clientWidth;
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+
+  const tooltipWidth = 320;
+  const tooltipHeight = 140;
+  const margin = 12;
+
+  let left = rect.left + scrollX;
+  const maxLeft = scrollX + viewportWidth - tooltipWidth - margin;
+  left = Math.min(Math.max(left, scrollX + margin), maxLeft);
+
+  let top = rect.bottom + scrollY + margin;
+  let placement: "top" | "bottom" = "bottom";
+  if (top + tooltipHeight > scrollY + window.innerHeight - margin) {
+    top = rect.top + scrollY - tooltipHeight - margin;
+    placement = "top";
+  }
+
+  profileTooltip.id = item.id;
+  profileTooltip.text = item.profileSummary || "暂无画像信息";
+  profileTooltip.top = top;
+  profileTooltip.left = left;
+  profileTooltip.placement = placement;
+};
+
+const hideProfileTooltip = () => {
+  profileTooltip.id = null;
+  profileTooltip.text = "";
+  profileTooltip.top = 0;
+  profileTooltip.left = 0;
+};
 
 // 初始化
 onMounted(() => {
@@ -202,6 +319,16 @@ onMounted(() => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
               >
+                账本说明
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              >
+                账本画像
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              >
                 共享Key
               </th>
               <th
@@ -234,6 +361,20 @@ onMounted(() => {
               <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
                 {{ item.bookName }}
               </td>
+              <td class="px-6 py-4 text-sm text-gray-300">
+                <div class="max-w-xs truncate" :title="item.description || '-'">
+                  {{ item.description || "-" }}
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-300">
+                <div
+                  class="max-w-xs truncate cursor-help"
+                  @mouseenter="showProfileTooltip(item, $event)"
+                  @mouseleave="hideProfileTooltip"
+                >
+                  {{ item.profileSummary || "暂无画像信息" }}
+                </div>
+              </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 font-mono"
               >
@@ -244,6 +385,88 @@ onMounted(() => {
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex items-center space-x-2">
+                  <button
+                    @click="triggerRuleBootstrap(item)"
+                    :disabled="ruleUpdateLoading[item.id]"
+                    class="text-blue-300 hover:text-blue-200 disabled:text-gray-500 transition-colors flex items-center space-x-1"
+                    title="重新生成智能规则"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 4v6h6M20 20v-6h-6M5 19a9 9 0 0114-7.5M19 5a9 9 0 01-14 7.5"
+                      ></path>
+                    </svg>
+                    <span class="text-xs">更新规则</span>
+                    <svg
+                      v-if="ruleUpdateLoading[item.id]"
+                      class="w-4 h-4 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V2C5.373 2 0 7.373 0 14h4z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    @click="triggerProfileRebuild(item)"
+                    :disabled="profileRebuildLoading[item.id]"
+                    class="text-emerald-300 hover:text-emerald-200 disabled:text-gray-500 transition-colors flex items-center space-x-1"
+                    title="重建账本画像"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 3l1.902 4.848L19 8.764l-3.5 3.409.91 4.984L12 15.708 7.59 17.157l.91-4.984L5 8.764l5.098-.916L12 3z"
+                      ></path>
+                    </svg>
+                    <span class="text-xs">重建画像</span>
+                    <svg
+                      v-if="profileRebuildLoading[item.id]"
+                      class="w-4 h-4 animate-spin"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V2C5.373 2 0 7.373 0 14h4z"
+                      />
+                    </svg>
+                  </button>
                   <button
                     @click="toDelete(item)"
                     class="text-red-400 hover:text-red-300 transition-colors"
@@ -366,6 +589,33 @@ onMounted(() => {
     @cancel="cancelEdit"
     v-if="editInfoFlag"
   />
+
+  <Teleport to="body">
+    <transition name="fade">
+      <div
+        v-if="profileTooltip.id"
+        class="fixed z-50 pointer-events-none px-2"
+        :style="{ top: profileTooltip.top + 'px', left: profileTooltip.left + 'px' }"
+      >
+        <div
+          class="w-80 max-w-[calc(100vw-32px)] bg-gray-900 text-white text-xs p-3 rounded-md shadow-2xl border border-gray-700 whitespace-pre-wrap break-words"
+          :class="profileTooltip.placement === 'top' ? 'origin-bottom' : 'origin-top'"
+        >
+          {{ profileTooltip.text }}
+        </div>
+      </div>
+    </transition>
+  </Teleport>
 </template>
 
-<style scoped></style>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

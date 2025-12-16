@@ -25,17 +25,23 @@
             <button
               v-for="book in books"
               :key="book.id"
-              class="px-2 py-1 md:px-4 md:py-2 rounded-lg border transition-all duration-200 max-w-32 md:max-w-40 group"
+              class="px-2 py-1 md:px-4 md:py-2 rounded-lg border transition-all duration-200 max-w-32 md:max-w-40 group text-left"
               :class="[
                 checkSelectBook(book.bookId || '')
                   ? 'bg-green-50 border-green-500 text-green-700 dark:bg-green-900/20 dark:border-green-400 dark:text-green-300'
                   : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600',
               ]"
               @click="openBook(book)"
-              :title="book.bookName"
+              :title="book.description ? `${book.bookName}｜${book.description}` : book.bookName"
             >
               <p class="truncate text-sm font-medium">
                 {{ book.bookName }}
+              </p>
+              <p
+                v-if="book.description"
+                class="mt-1 text-xs text-gray-500 dark:text-gray-300 truncate"
+              >
+                {{ book.description }}
               </p>
             </button>
           </div>
@@ -110,6 +116,22 @@
               class="text-red-500 text-xs"
             >
               必填
+            </p>
+          </div>
+          <div class="mt-4 space-y-2">
+            <label
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              账本说明
+            </label>
+            <textarea
+              v-model="newBook.description"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 resize-none"
+              placeholder="描述该账本的用途"
+            ></textarea>
+            <p class="text-gray-400 dark:text-gray-500 text-xs">
+              说明会显示在账本列表中，帮助区分不同用途
             </p>
           </div>
         </div>
@@ -327,12 +349,24 @@ const confirmBookForm = () => {
     return;
   }
 
+  const payload: Record<string, any> = {
+    bookName: newBook.value.bookName,
+  };
+
+  if (typeof newBook.value.description === "string") {
+    const trimmed = newBook.value.description.trim();
+    if (trimmed) {
+      payload.description = trimmed;
+    }
+  }
+
   isAddingBook.value = true;
   doApi
-    .post("api/entry/book/add", { bookName: newBook.value.bookName })
+    .post("api/entry/book/add", payload)
     .then((_res) => {
       Alert.success("账本添加成功");
       newBook.value.bookName = "";
+      newBook.value.description = "";
       addBookDialog.value.visible = false;
       initBooks();
     })

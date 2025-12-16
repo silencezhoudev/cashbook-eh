@@ -130,7 +130,7 @@ const handleNavigate = (menu: Menu) => {
   <!-- Sidebar -->
   <aside
     :class="[
-      'fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-green-950/40 border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-200 ease-in-out',
+      'fixed inset-y-0 left-0 z-50 w-40 bg-white dark:bg-green-950/40 border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-200 ease-in-out',
       isMobile
         ? isOpen
           ? 'translate-x-0'
@@ -143,7 +143,7 @@ const handleNavigate = (menu: Menu) => {
       <!-- Mobile header -->
       <div
         v-if="isMobile"
-        class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700"
+        class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700"
       >
         <div class="flex items-center">
           <img src="/logo.png" alt="Cashbook" class="h-8 w-8" />
@@ -158,13 +158,13 @@ const handleNavigate = (menu: Menu) => {
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 p-4 space-y-2">
+      <nav class="flex-1 p-3 space-y-2">
         <button
           v-for="item in items"
           :key="item.path"
           @click="handleNavigate(item)"
           :class="[
-            'w-full flex items-center px-3 py-2 rounded-lg text-left transition-colors duration-200',
+            'w-full flex items-center px-2 py-2 rounded-lg text-left transition-colors duration-200',
             currentPath === item.path
               ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
               : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800',
@@ -174,7 +174,7 @@ const handleNavigate = (menu: Menu) => {
             v-if="item.icon !== 'string'"
             :is="item.icon"
             :class="[
-              'h-5 w-5 mr-3',
+              'h-5 w-5 mr-2',
               currentPath === item.path
                 ? 'text-blue-600 dark:text-blue-400'
                 : item.color,
@@ -185,25 +185,25 @@ const handleNavigate = (menu: Menu) => {
             v-else
             :class="[
               item.icon,
-              'text-base mr-3',
+              'text-base mr-2',
               currentPath === item.path
                 ? 'text-blue-600 dark:text-blue-400'
                 : item.color,
             ]"
           ></i>
-          <span class="font-medium">{{ item.title }}</span>
+          <span class="font-medium text-sm">{{ item.title }}</span>
         </button>
       </nav>
 
       <!-- Theme toggle -->
-      <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="p-3 border-t border-gray-200 dark:border-gray-700">
         <button
           @click="toggleTheme"
-          class="w-full flex items-center justify-center px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium"
+          class="w-full flex items-center justify-center px-2 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium"
         >
           <SunIcon v-if="!isDark" class="h-5 w-5 mr-2 text-yellow-500" />
           <MoonIcon v-else class="h-5 w-5 mr-2 text-blue-300" />
-          <span>{{ isDark ? "深色模式" : "浅色模式" }}</span>
+          <span class="text-sm">{{ isDark ? "深色模式" : "浅色模式" }}</span>
         </button>
       </div>
     </div>

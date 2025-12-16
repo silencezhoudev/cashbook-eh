@@ -16,7 +16,7 @@
 import * as echarts from "echarts";
 import { onMounted, ref, watch } from "vue";
 import { dateFormater } from "@/utils/common";
-import { multiBookDaily } from "~/utils/analyticsApi";
+import { multiBookDailyChart } from "~/utils/analyticsApi";
 import type { Book } from "~/utils/model";
 
 interface Props {
@@ -87,7 +87,7 @@ const doQuery = async () => {
     const startDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
     const endDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${new Date(currentYear, currentMonth, 0).getDate()}`;
     
-    const res = await multiBookDaily(props.bookIds, { startDate, endDate });
+    const res = await multiBookDailyChart(props.bookIds, { startDate, endDate });
     
     if (!res || res.length === 0) {
       noData.value = true;

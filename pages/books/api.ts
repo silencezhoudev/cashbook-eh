@@ -26,3 +26,30 @@ export const list = (data: Book): Promise<Book[]> => {
 export const all = (): Promise<Book[]> => {
   return doApi.post(`${prefiex}/all`, {});
 };
+
+export const bootstrapRules = (payload: {
+  userId?: number;
+  adminAccount: string;
+  adminPassword: string;
+}): Promise<any> => {
+  return doApi.post(`api/admin/rules/bootstrap`, payload);
+};
+
+export const rebuildProfile = (payload: {
+  bookId?: string;
+}): Promise<any> => {
+  return doApi.post(`api/book/profile/rebuild`, payload);
+};
+
+export const exportProfileKeywords = (payload: { bookId: string }): Promise<any> => {
+  return doApi.post(`api/book/profile/export-keywords`, payload);
+};
+
+export const importProfileKeywords = (payload: {
+  bookId: string;
+  data: any;
+  override?: boolean;
+  topN?: number;
+}): Promise<any> => {
+  return doApi.post(`api/book/profile/import-keywords`, payload);
+};

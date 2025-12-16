@@ -57,6 +57,7 @@ export default defineEventHandler(async (event) => {
         bookName: book.bookName,
         createDate: book.createDate,
         shareKey: book.shareKey,
+        description: book.description,
       },
     });
   } else {
